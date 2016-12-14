@@ -31,6 +31,7 @@ for a in json_object:
 		count["24hrs"]=count["24hrs"]+1
 	elif(current.days>7):
 		count["greater1week"]=count["greater1week"]+1
+		count["24hrs"]=count["24hrs"]+1
 	else:
 		count["1week"]=count["1week"]+1
 
