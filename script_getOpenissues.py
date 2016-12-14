@@ -11,24 +11,25 @@ githubLink=sys.argv[1]
 count={"24hrs":0,"1week":0,"greater1week":0}
 
 
-a=githubLink[8:].split('/')
+abc=githubLink[8:].split('/')
 page_id=1
 #Generate the unique filename which can be consumed later on
 filename="curl_output_"+str(uuid.uuid4())+".json"
-curlString='curl -XGET https://api.github.com/repos/'+a[1]+'/'+a[2]+"/issues?per_page=100 > "+filename
+curlString='curl -XGET https://api.github.com/repos/'+abc[1]+'/'+abc[2]+"/issues?page=1 > "+filename
 os.system(curlString)
 f=open(filename)
+json_object={}
 json_object=json.load(f)
 tmp=json_object
 f.close()
-while(len(tmp)>0):
+os.remove(filename)
+
+while(len(json_object)>0):
 #Get the current datetime in ISO format 
 	currentdate=datetime.datetime.now()
 
-	count={"24hrs":0,"1week":0,"greater1week":0}
-
 	for a in json_object:
-		
+		print (a)
 		d=datetime.datetime.strptime(a['created_at'],"%Y-%m-%dT%H:%M:%SZ")
 		current=currentdate-(d)
 		
@@ -40,19 +41,25 @@ while(len(tmp)>0):
 		else:
 			count["1week"]=count["1week"]+1
 
-	f.close()
+	
 
-	os.remove(filename)
-	page_id=2
+	
+	
 	filename="curl_output_"+str(uuid.uuid4())+".json"
-	curlString='curl -XGET https://api.github.com/repos/'+a[1]+'/'+a[2]+"/issues?page="+str(page_id)+"&per_page=100 > "+filename
 	print (curlString)
+	page_id=page_id+1
+	curlString='curl -XGET https://api.github.com/repos/'+abc[1]+'/'+abc[2]+"/issues?page="+str(page_id)+" > "+filename
+
 	os.system(curlString)
 	f=open(filename)
-	json_object={}
+	
 	json_object=json.load(f)
+
+	tmp=json_object
+	
 	f.close()
 	os.remove(filename)
+
 print("\nOpenIssues count for Past 24 hrs : ",count["24hrs"])
 print("OpenIssues count for Past 1 week : ",count["1week"])
 print("OpenIssues count for greater than 1 week : ",count["greater1week"])
