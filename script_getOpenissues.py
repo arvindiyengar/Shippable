@@ -29,7 +29,7 @@ while(len(json_object)>0):
 	currentdate=datetime.datetime.now()
 
 	for a in json_object:
-		print (a)
+		#print (a)
 		d=datetime.datetime.strptime(a['created_at'],"%Y-%m-%dT%H:%M:%SZ")
 		current=currentdate-(d)
 		
